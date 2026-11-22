@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Conectando ao AllService…</title>
+</head>
+<body style="font:16px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;max-width:420px;margin:18vh auto;padding:0 20px;color:#0e1f48">
+<p id="msg">Conectando ao sistema AllService…</p>
+<script>
+/*
+ * Página intermediária PROVISÓRIA do login do Google (Google Agenda do sistema AllService).
+ * O firewall da hospedagem do sistema barra o retorno do Google porque ele traz "scope=https://..." no endereço.
+ * Esta página recebe o retorno e repassa ao sistema só o código de autorização e o "state" (conferido pelo sistema).
+ * Não guarda nada. O destino é fixo: não serve para redirecionar para outro lugar.
+ * Pode ser apagada quando a hospedagem liberar o retorno direto.
+ */
+(function () {
+  var DESTINO = 'https://allservice.allsuite.com.br/index.php';
+  var p = new URLSearchParams(location.search);
+  if (!p.get('code') && !p.get('error')) {
+    document.getElementById('msg').textContent = 'Esta página só é usada no retorno do login do Google para o sistema AllService.';
+    return;
+  }
+  var q = new URLSearchParams({ p: 'configuracoes', a: 'gcal_callback' });
+  ['code', 'state', 'error'].forEach(function (k) { if (p.get(k)) q.set(k, p.get(k)); });
+  location.replace(DESTINO + '?' + q.toString());
+})();
+</script>
+</body>
+</html>
